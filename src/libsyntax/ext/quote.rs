@@ -353,17 +353,11 @@ pub mod rt {
     impl<'a> ExtParseUtils for ExtCtxt<'a> {
 
         fn parse_item(&self, s: String) -> P<ast::Item> {
-            let res = parse::parse_item_from_source_str(
+            parse::parse_item_from_source_str(
                 "<quote expansion>".to_string(),
                 s,
                 self.cfg(),
-                self.parse_sess());
-            match res {
-                Some(ast) => ast,
-                None => {
-                    error!("parse error");
-                    panic!()
-                }
+                self.parse_sess()).expect("parse error");
             }
         }
 

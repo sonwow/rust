@@ -883,7 +883,6 @@ pub fn map_crate<'ast, F: FoldOps>(forest: &'ast mut Forest, fold_ops: F) -> Map
     let krate = mem::replace(&mut forest.krate, Crate {
         module: Mod {
             inner: DUMMY_SP,
-            view_items: vec![],
             items: vec![],
         },
         attrs: vec![],

@@ -98,7 +98,6 @@ pub trait AstBuilder {
              expr: Option<P<ast::Expr>>) -> P<ast::Block>;
     fn block_expr(&self, expr: P<ast::Expr>) -> P<ast::Block>;
     fn block_all(&self, span: Span,
-                 view_items: Vec<ast::ViewItem>,
                  stmts: Vec<P<ast::Stmt>>,
                  expr: Option<P<ast::Expr>>) -> P<ast::Block>;
 
@@ -243,7 +242,7 @@ pub trait AstBuilder {
 
     fn item_mod(&self, span: Span, inner_span: Span,
                 name: Ident, attrs: Vec<ast::Attribute>,
-                vi: Vec<ast::ViewItem> , items: Vec<P<ast::Item>> ) -> P<ast::Item>;
+                items: Vec<P<ast::Item>>) -> P<ast::Item>;
 
     fn item_static(&self,
                    span: Span,
@@ -522,7 +521,7 @@ impl<'a> AstBuilder for ExtCtxt<'a> {
 
     fn block(&self, span: Span, stmts: Vec<P<ast::Stmt>>,
              expr: Option<P<Expr>>) -> P<ast::Block> {
-        self.block_all(span, Vec::new(), stmts, expr)
+        self.block_all(span, stmts, expr)
     }
 
     fn stmt_item(&self, sp: Span, item: P<ast::Item>) -> P<ast::Stmt> {
@@ -531,15 +530,13 @@ impl<'a> AstBuilder for ExtCtxt<'a> {
     }
 
     fn block_expr(&self, expr: P<ast::Expr>) -> P<ast::Block> {
-        self.block_all(expr.span, Vec::new(), Vec::new(), Some(expr))
+        self.block_all(expr.span, Vec::new(), Some(expr))
     }
     fn block_all(&self,
                  span: Span,
-                 view_items: Vec<ast::ViewItem>,
                  stmts: Vec<P<ast::Stmt>>,
                  expr: Option<P<ast::Expr>>) -> P<ast::Block> {
             P(ast::Block {
-               view_items: view_items,
                stmts: stmts,
                expr: expr,
                id: ast::DUMMY_NODE_ID,
@@ -1035,16 +1032,14 @@ impl<'a> AstBuilder for ExtCtxt<'a> {
     }
 
     fn item_mod(&self, span: Span, inner_span: Span, name: Ident,
-                attrs: Vec<ast::Attribute> ,
-                vi: Vec<ast::ViewItem> ,
-                items: Vec<P<ast::Item>> ) -> P<ast::Item> {
+                attrs: Vec<ast::Attribute>,
+                items: Vec<P<ast::Item>>) -> P<ast::Item> {
         self.item(
             span,
             name,
             attrs,
             ast::ItemMod(ast::Mod {
                 inner: inner_span,
-                view_items: vi,
                 items: items,
             })
         )

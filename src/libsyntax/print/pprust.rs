@@ -333,10 +333,6 @@ pub fn item_to_string(i: &ast::Item) -> String {
     $to_string(|s| s.print_item(i))
 }
 
-pub fn view_item_to_string(i: &ast::ViewItem) -> String {
-    $to_string(|s| s.print_view_item(i))
-}
-
 pub fn generics_to_string(generics: &ast::Generics) -> String {
     $to_string(|s| s.print_generics(generics))
 }
@@ -628,9 +624,6 @@ impl<'a> State<'a> {
     pub fn print_mod(&mut self, _mod: &ast::Mod,
                      attrs: &[ast::Attribute]) -> IoResult<()> {
         try!(self.print_inner_attributes(attrs));
-        for vitem in _mod.view_items.iter() {
-            try!(self.print_view_item(vitem));
-        }
         for item in _mod.items.iter() {
             try!(self.print_item(&**item));
         }
@@ -640,9 +633,6 @@ impl<'a> State<'a> {
     pub fn print_foreign_mod(&mut self, nmod: &ast::ForeignMod,
                              attrs: &[ast::Attribute]) -> IoResult<()> {
         try!(self.print_inner_attributes(attrs));
-        for vitem in nmod.view_items.iter() {
-            try!(self.print_view_item(vitem));
-        }
         for item in nmod.items.iter() {
             try!(self.print_foreign_item(&**item));
         }
@@ -1383,9 +1373,6 @@ impl<'a> State<'a> {
 
         try!(self.print_inner_attributes(attrs));
 
-        for vi in blk.view_items.iter() {
-            try!(self.print_view_item(vi));
-        }
         for st in blk.stmts.iter() {
             try!(self.print_stmt(&**st));
         }
